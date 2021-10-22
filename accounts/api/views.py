@@ -205,3 +205,22 @@ class PaymentView(views.APIView):
             'status': payment.status,
             'payment_id': payment.payment_id
         })
+
+class OTPSendAPIView(views.APIView):
+   def get(self,request,phoneno=None,format=None):
+        otp = random.randint(100000, 999999)
+        # Store Phone Number
+        #phone = "7903102839";request.POST.get
+        phone = str(phoneno)
+        # Contstruc Message String
+        message = str(otp) + ' is the verification code to access your Buildcron account. This verification code is valid for 5 mins. Please do not share it with anyone. Thanks, Squarow consultants pvt. ltd.'
+        # Encode message
+        message = urllib.parse.quote(message, safe='')
+        # Construct API URL to send SMS
+        url = "https://smsapi.24x7sms.com/api_2.0/SendSMS.aspx?APIKEY=WxSMoQhUSAZ&MobileNo=" + phone + "&SenderID=SQUROW&Message=" + message + "&ServiceName=TEMPLATE_BASED"
+        # Run API
+        r = requests.get(url)
+        # Display API response
+        print(r.text)
+        print("SMS SENT...")
+        return Response({'success':'Your OTP sent..'}, status=status.HTTP_200_OK)
